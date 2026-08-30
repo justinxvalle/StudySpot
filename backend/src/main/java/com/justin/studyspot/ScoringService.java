@@ -69,4 +69,10 @@ public class ScoringService {
                 r -> r.getNoise() == null ? null : r.getNoise().getWeight(),
                 now);
     }
+
+    public Optional<AmenityScore> scoreWifi(List<Report> reports, Instant now) {
+        return score(reports,
+                r -> r.getHasWifi() == null ? null : (r.getHasWifi() ? 1.0 : 0.0),
+                now);
+    }
 }
