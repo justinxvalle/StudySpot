@@ -22,12 +22,10 @@ import java.util.function.Function;
 public class ScoringService {
     private static final int HALF_LIFE_DAYS = 90;
 
-    // Formula used to calculate
     public double calculateDecay(double ageDays) {
         return Math.exp(-Math.log(2) * ageDays / HALF_LIFE_DAYS );
     }
 
-    // The actual scoring function
     public Optional<AmenityScore> score(List<Report> reports,
                                         Function<Report, Double> weightExtractor,
                                         Instant now) {
@@ -55,7 +53,9 @@ public class ScoringService {
             return Optional.empty();
         }
 
-        return Optional.of(new AmenityScore(weightedSum / decaySum, decaySum, count));
+        return Optional.of(new AmenityScore(round(weightedSum / decaySum),
+                round(decaySum),
+                count));
     }
 
     public Optional<AmenityScore> scoreOutlets(List<Report> reports, Instant now) {
@@ -74,5 +74,9 @@ public class ScoringService {
         return score(reports,
                 r -> r.getHasWifi() == null ? null : (r.getHasWifi() ? 1.0 : 0.0),
                 now);
+    }
+
+    private static double round(double value) {
+        return Math.round(value * 1000.0) / 1000.0;
     }
 }

@@ -1,10 +1,9 @@
 package com.justin.studyspot;
 
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -13,9 +12,11 @@ import java.util.List;
 public class SpotController {
 
     private final SpotService spotService;
+    private final ReportService reportService;
 
-    public SpotController(SpotService spotService) {
+    public SpotController(SpotService spotService, ReportService reportService) {
         this.spotService = spotService;
+        this.reportService = reportService;
     }
 
     @GetMapping
@@ -28,5 +29,14 @@ public class SpotController {
         return spotService.getSpot(spotId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/{spotId}/reports")
+    public ResponseEntity<Void> createReport(
+            @PathVariable Long spotId,
+            @Valid @RequestBody ReportRequest request
+    ) {
+       reportService.createReport(spotId, request);
+       return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
