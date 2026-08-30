@@ -1,5 +1,9 @@
-package com.justin.studyspot;
+package com.justin.studyspot.service;
 
+import com.justin.studyspot.ScoringService;
+import com.justin.studyspot.dto.AmenityScore;
+import com.justin.studyspot.model.OutletLevel;
+import com.justin.studyspot.model.Report;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;

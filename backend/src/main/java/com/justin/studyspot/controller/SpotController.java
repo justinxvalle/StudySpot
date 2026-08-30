@@ -1,5 +1,9 @@
-package com.justin.studyspot;
+package com.justin.studyspot.controller;
 
+import com.justin.studyspot.dto.ReportRequest;
+import com.justin.studyspot.dto.SpotResponse;
+import com.justin.studyspot.service.ReportService;
+import com.justin.studyspot.service.SpotService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

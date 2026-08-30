@@ -1,4 +1,4 @@
-package com.justin.studyspot;
+package com.justin.studyspot.model;
 
 public enum OutletLevel {
     NONE(0.0), FEW(0.5), MANY(1.0);

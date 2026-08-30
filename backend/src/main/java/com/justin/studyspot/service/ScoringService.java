@@ -1,5 +1,7 @@
 package com.justin.studyspot;
 
+import com.justin.studyspot.dto.AmenityScore;
+import com.justin.studyspot.model.Report;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;

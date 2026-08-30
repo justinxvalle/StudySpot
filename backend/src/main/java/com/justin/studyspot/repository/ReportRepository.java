@@ -1,5 +1,6 @@
-package com.justin.studyspot;
+package com.justin.studyspot.repository;
 
+import com.justin.studyspot.model.Report;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

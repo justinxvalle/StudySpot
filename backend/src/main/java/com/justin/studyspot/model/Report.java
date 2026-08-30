@@ -1,4 +1,4 @@
-package com.justin.studyspot;
+package com.justin.studyspot.model;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;

@@ -1,5 +1,7 @@
-package com.justin.studyspot;
+package com.justin.studyspot.dto;
 
+import com.justin.studyspot.model.NoiseLevel;
+import com.justin.studyspot.model.OutletLevel;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 

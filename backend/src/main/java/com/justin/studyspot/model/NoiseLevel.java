@@ -1,4 +1,4 @@
-package com.justin.studyspot;
+package com.justin.studyspot.model;
 
 public enum NoiseLevel {
     QUIET(0.0), MODERATE(0.5), LOUD(1.0);

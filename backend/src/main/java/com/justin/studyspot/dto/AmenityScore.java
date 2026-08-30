@@ -1,4 +1,4 @@
-package com.justin.studyspot;
+package com.justin.studyspot.dto;
 
 /**
  *

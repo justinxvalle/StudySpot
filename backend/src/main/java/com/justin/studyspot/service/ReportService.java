@@ -1,5 +1,10 @@
-package com.justin.studyspot;
+package com.justin.studyspot.service;
 
+import com.justin.studyspot.dto.ReportRequest;
+import com.justin.studyspot.model.Report;
+import com.justin.studyspot.model.Spot;
+import com.justin.studyspot.repository.ReportRepository;
+import com.justin.studyspot.repository.SpotRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
