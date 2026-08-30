@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
+import { type Spot } from "./types";
 
 function App() {
-  const [spots, setSpots] = useState<any[]>([]);
+  const [spots, setSpots] = useState<Spot[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/spots")
+    fetch(`${import.meta.env.VITE_API_URL}/api/spots`)
       .then((res) => res.json())
       .then((data) => setSpots(data))
       .catch((err) => setError(err.message));
