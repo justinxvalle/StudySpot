@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { type Spot } from "./types";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
 
 function App() {
   const [spots, setSpots] = useState<Spot[]>([]);
@@ -17,11 +18,24 @@ function App() {
   return (
     <div>
       <h1>Spots ({spots.length})</h1>
-      <ul>
-        {spots.map((s) => (
-          <li key={s.spotId}>{s.spotName}</li>
+
+      <MapContainer
+        center={[43.73, -79.3]}
+        zoom={12}
+        style={{ height: "500px", width: "100%" }}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+
+        {spots.map((spot) => (
+          <Marker
+            key={spot.spotId}
+            position={[spot.latitude, spot.longitude]}
+          />
         ))}
-      </ul>
+      </MapContainer>
     </div>
   );
 }
