@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { type Spot } from "./types";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import { type Spot, type AmenityScore } from "./types";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 
 function App() {
   const [spots, setSpots] = useState<Spot[]>([]);
@@ -30,14 +30,57 @@ function App() {
         />
 
         {spots.map((spot) => (
-          <Marker
-            key={spot.spotId}
-            position={[spot.latitude, spot.longitude]}
-          />
+          <Marker key={spot.spotId} position={[spot.latitude, spot.longitude]}>
+            <Popup>
+              <strong>{spot.spotName}</strong>
+              <div className="spot-address">{spot.address}</div>
+              <div className="spot-amenities">
+                <div className="spot-outlets">
+                  Outlets: {describeOutlets(spot.outlets)}
+                </div>
+                <div className="spot-noise">
+                  Noise: {describeNoise(spot.noise)}
+                </div>
+                <div className="spot-wifi">WiFi: {describeWiFi(spot.wifi)}</div>
+              </div>
+              <div className="spot-chain">
+                Chain: {spot.chain || "Independent"}
+              </div>
+              <div className="spot-map-link">
+                <a
+                  href={spot.mapLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View on Map
+                </a>
+              </div>
+            </Popup>
+          </Marker>
         ))}
       </MapContainer>
     </div>
   );
+}
+
+function describeOutlets(score: AmenityScore | null): string {
+  if (!score) return "No reports yet";
+  if (score.value < 0.25) return "No outlets";
+  if (score.value < 0.75) return "Some outlets";
+  return "Lots of outlets";
+}
+
+function describeNoise(score: AmenityScore | null): string {
+  if (!score) return "No reports yet";
+  if (score.value < 0.25) return "Very quiet";
+  if (score.value < 0.75) return "Moderate noise";
+  return "Very noisy";
+}
+
+function describeWiFi(score: AmenityScore | null): string {
+  if (!score) return "No reports yet";
+  if (score.value < 0.5) return "No WiFi";
+  return "WiFi available";
 }
 
 export default App;
