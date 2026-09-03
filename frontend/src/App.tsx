@@ -163,4 +163,13 @@ function describeReportCount(reportCount: number | undefined): string {
   return `${reportCount} reports`;
 }
 
+function getReporterId(): string {
+  let id = localStorage.getItem("reporterId");
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem("reporterId", id);
+  }
+  return id;
+}
+
 export default App;
