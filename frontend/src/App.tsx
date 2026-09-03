@@ -37,11 +37,19 @@ function App() {
               <div className="spot-amenities">
                 <div className="spot-outlets">
                   Outlets: {describeOutlets(spot.outlets)}
+                  {spot.outlets &&
+                    ` (${describeReportCount(spot.outlets.reportCount)})`}
                 </div>
                 <div className="spot-noise">
                   Noise: {describeNoise(spot.noise)}
+                  {spot.noise &&
+                    ` (${describeReportCount(spot.noise.reportCount)})`}
                 </div>
-                <div className="spot-wifi">WiFi: {describeWiFi(spot.wifi)}</div>
+                <div className="spot-wifi">
+                  WiFi: {describeWiFi(spot.wifi)}
+                  {spot.wifi &&
+                    ` (${describeReportCount(spot.wifi.reportCount)})`}
+                </div>
               </div>
               <div className="spot-chain">
                 Chain: {spot.chain || "Independent"}
@@ -81,6 +89,12 @@ function describeWiFi(score: AmenityScore | null): string {
   if (!score) return "No reports yet";
   if (score.value < 0.5) return "No WiFi";
   return "WiFi available";
+}
+
+function describeReportCount(reportCount: number | undefined): string {
+  if (reportCount === undefined || reportCount === 0) return "No reports yet";
+  if (reportCount === 1) return "1 report";
+  return `${reportCount} reports`;
 }
 
 export default App;
