@@ -6,6 +6,33 @@ function App() {
   const [spots, setSpots] = useState<Spot[]>([]);
   const [error, setError] = useState<string | null>(null);
 
+  const [onlyOutlets, setOnlyOutlets] = useState(false);
+  const [onlyQuietSpots, setOnlyQuietSpots] = useState(false);
+  const [onlyWifi, setOnlyWifi] = useState(false);
+  const [chainFilter, setChainFilter] = useState("");
+
+  const visible = spots.filter((spot) => {
+    if (onlyOutlets && (!spot.outlets || spot.outlets.value < 0.25)) {
+      return false;
+    }
+    if (onlyQuietSpots && (!spot.noise || spot.noise.value >= 0.25)) {
+      return false;
+    }
+    if (onlyWifi && (!spot.wifi || spot.wifi.value < 0.5)) {
+      return false;
+    }
+    if (chainFilter && spot.chain !== chainFilter) {
+      return false;
+    }
+    return true;
+  });
+
+  const chains = Array.from(
+    new Set(
+      spots.map((spot) => spot.chain).filter((nullable) => nullable !== null),
+    ),
+  );
+
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/spots`)
       .then((res) => res.json())
@@ -17,7 +44,46 @@ function App() {
 
   return (
     <div>
-      <h1>Spots ({spots.length})</h1>
+      <h1>Spots ({visible.length})</h1>
+
+      <label>
+        <input
+          type="checkbox"
+          checked={onlyOutlets}
+          onChange={(e) => setOnlyOutlets(e.target.checked)}
+        />
+        Only spots with outlets
+      </label>
+
+      <label>
+        <input
+          type="checkbox"
+          checked={onlyQuietSpots}
+          onChange={(e) => setOnlyQuietSpots(e.target.checked)}
+        />
+        Only quiet spots
+      </label>
+
+      <label>
+        <input
+          type="checkbox"
+          checked={onlyWifi}
+          onChange={(e) => setOnlyWifi(e.target.checked)}
+        />
+        Only spots with WiFi
+      </label>
+
+      <select
+        value={chainFilter}
+        onChange={(e) => setChainFilter(e.target.value)}
+      >
+        <option value="">All chains</option>
+        {chains.map((chain) => (
+          <option key={chain} value={chain}>
+            {chain}
+          </option>
+        ))}
+      </select>
 
       <MapContainer
         center={[43.73, -79.3]}
@@ -29,7 +95,7 @@ function App() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {spots.map((spot) => (
+        {visible.map((spot) => (
           <Marker key={spot.spotId} position={[spot.latitude, spot.longitude]}>
             <Popup>
               <strong>{spot.spotName}</strong>
