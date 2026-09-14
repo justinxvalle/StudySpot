@@ -1,11 +1,5 @@
 import { useState } from "react";
-
-interface Report {
-  outlets: string;
-  noise: string;
-  wifi: string;
-  comments: string;
-}
+import { type Report } from "./types";
 
 function ReportForm({ onSubmit }: { onSubmit: (report: Report) => void }) {
   const [outlets, setOutlets] = useState("");

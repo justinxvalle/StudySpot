@@ -16,3 +16,10 @@ export type Spot = {
   noise: AmenityScore | null;
   wifi: AmenityScore | null;
 };
+
+export type Report = {
+  outlets: string;
+  noise: string;
+  wifi: string;
+  comments: string;
+};

@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
-import { type Spot, type AmenityScore } from "./types";
+import { useState, useEffect, useCallback } from "react";
+import { type Spot, type AmenityScore, type Report } from "./types";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import ReportForm from "./ReportForm";
 
 function App() {
   const [spots, setSpots] = useState<Spot[]>([]);
@@ -33,17 +34,61 @@ function App() {
     ),
   );
 
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/spots`)
-      .then((res) => res.json())
-      .then((data) => setSpots(data))
-      .catch((err) => setError(err.message));
+  const loadSpots = useCallback(async () => {
+    try {
+      setError(null);
+
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/spots`);
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(
+          body?.message ?? `Could not load spots (HTTP ${res.status})`,
+        );
+      }
+
+      const data: Spot[] = await res.json();
+      setSpots(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not load spots");
+    }
   }, []);
 
-  if (error) return <p>Error: {error}</p>;
+  const submitReport = async (spotId: Spot["spotId"], report: Report) => {
+    try {
+      setError(null);
+
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/spots/${spotId}/reports`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(toRequest(report, getReporterId())),
+        },
+      );
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(
+          body?.message ?? `Could not submit report (HTTP ${res.status})`,
+        );
+      }
+
+      await loadSpots();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not submit report");
+    }
+  };
+
+  useEffect(() => {
+    void loadSpots();
+  }, [loadSpots]);
 
   return (
     <div>
+      {error && <p role="alert">Error: {error}</p>}
       <h1>Spots ({visible.length})</h1>
 
       <label>
@@ -129,6 +174,9 @@ function App() {
                   View on Map
                 </a>
               </div>
+              <ReportForm
+                onSubmit={(report) => submitReport(spot.spotId, report)}
+              />
             </Popup>
           </Marker>
         ))}
@@ -172,4 +220,13 @@ function getReporterId(): string {
   return id;
 }
 
+function toRequest(report: Report, reporterId: string) {
+  return {
+    outletLevel: report.outlets || null,
+    noise: report.noise || null,
+    hasWifi: report.wifi === "" ? null : report.wifi === "YES",
+    comments: report.comments || null,
+    reporterId,
+  };
+}
 export default App;
